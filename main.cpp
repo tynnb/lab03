@@ -1,7 +1,5 @@
 #include "include/function.h"
 
-using namespace std;
-
 int main() {
     vector<Figure*> figures;
     int choice;
