@@ -90,6 +90,128 @@ TEST(TrapezoidTest, OutputOperator) {
     ASSERT_TRUE(result.find("vertices:") != std::string::npos);
 }
 
+TEST(CopyMoveTest, SquareCopyConstructor) {
+    Square square1(4.0, 2.0, 3.0);
+    Square square2(square1);
+    ASSERT_TRUE(square1 == square2);
+}
+
+TEST(CopyMoveTest, SquareMoveConstructor) {
+    Square square1(4.0, 2.0, 3.0);
+    Square square2(std::move(square1));
+    ASSERT_DOUBLE_EQ(square2.getCenterX(), 2.0);
+    ASSERT_DOUBLE_EQ(square2.getCenterY(), 3.0);
+}
+
+TEST(CopyMoveTest, SquareCopyAssignment) {
+    Square square1(4.0, 2.0, 3.0);
+    Square square2;
+    square2 = square1;
+    ASSERT_TRUE(square1 == square2);
+}
+
+TEST(CopyMoveTest, SquareMoveAssignment) {
+    Square square1(4.0, 2.0, 3.0);
+    Square square2;
+    square2 = std::move(square1);
+    ASSERT_DOUBLE_EQ(square2.getCenterX(), 2.0);
+    ASSERT_DOUBLE_EQ(square2.getCenterY(), 3.0);
+}
+
+TEST(CopyMoveTest, RectangleComparison) {
+    Rectangle rect1(3.0, 4.0, 1.0, 2.0);
+    Rectangle rect2(3.0, 4.0, 1.0, 2.0);
+    Rectangle rect3(3.0, 5.0, 1.0, 2.0);
+    ASSERT_TRUE(rect1 == rect2);
+    ASSERT_FALSE(rect1 == rect3);
+}
+
+TEST(CopyMoveTest, TrapezoidCopyOperations) {
+    Trapezoid trap1(2.0, 4.0, 3.0, 1.0, 2.0);
+    Trapezoid trap2 = trap1;
+    Trapezoid trap3(trap1);
+    ASSERT_TRUE(trap1 == trap2);
+    ASSERT_TRUE(trap1 == trap3);
+}
+
+TEST(VirtualOperationsTest, SquareClone) {
+    Square square(4.0, 2.0, 3.0);
+    auto cloned = square.clone();
+    ASSERT_NE(cloned.get(), nullptr);
+    ASSERT_TRUE(square.equals(cloned.get()));
+    ASSERT_DOUBLE_EQ(cloned->getCenterX(), 2.0);
+    ASSERT_DOUBLE_EQ(cloned->getCenterY(), 3.0);
+    ASSERT_DOUBLE_EQ(static_cast<double>(*cloned), 16.0);
+}
+
+TEST(VirtualOperationsTest, RectangleClone) {
+    Rectangle rectangle(3.0, 5.0, 1.0, 2.0);
+    auto cloned = rectangle.clone();
+    ASSERT_NE(cloned.get(), nullptr);
+    ASSERT_TRUE(rectangle.equals(cloned.get()));
+    ASSERT_DOUBLE_EQ(cloned->getCenterX(), 1.0);
+    ASSERT_DOUBLE_EQ(cloned->getCenterY(), 2.0);
+    ASSERT_DOUBLE_EQ(static_cast<double>(*cloned), 15.0);
+}
+
+TEST(VirtualOperationsTest, TrapezoidClone) {
+    Trapezoid trapezoid(4.0, 6.0, 3.0, 1.0, 2.0);
+    auto cloned = trapezoid.clone();
+    ASSERT_NE(cloned.get(), nullptr);
+    ASSERT_TRUE(trapezoid.equals(cloned.get()));
+    ASSERT_DOUBLE_EQ(cloned->getCenterX(), 1.0);
+    ASSERT_DOUBLE_EQ(cloned->getCenterY(), 2.0);
+    ASSERT_DOUBLE_EQ(static_cast<double>(*cloned), 15.0);
+}
+
+TEST(VirtualOperationsTest, SquareEquals) {
+    Square square1(4.0, 2.0, 3.0);
+    Square square2(4.0, 2.0, 3.0);
+    Square square3(5.0, 2.0, 3.0);
+    ASSERT_TRUE(square1.equals(&square2));
+    ASSERT_FALSE(square1.equals(&square3));
+}
+
+TEST(VirtualOperationsTest, RectangleEquals) {
+    Rectangle rect1(3.0, 4.0, 1.0, 2.0);
+    Rectangle rect2(3.0, 4.0, 1.0, 2.0);
+    Rectangle rect3(3.0, 5.0, 1.0, 2.0);
+    ASSERT_TRUE(rect1.equals(&rect2));
+    ASSERT_FALSE(rect1.equals(&rect3));
+}
+
+TEST(VirtualOperationsTest, TrapezoidEquals) {
+    Trapezoid trap1(2.0, 4.0, 3.0, 1.0, 2.0);
+    Trapezoid trap2(2.0, 4.0, 3.0, 1.0, 2.0);
+    Trapezoid trap3(2.0, 5.0, 3.0, 1.0, 2.0);
+    ASSERT_TRUE(trap1.equals(&trap2));
+    ASSERT_FALSE(trap1.equals(&trap3));
+}
+
+TEST(VirtualOperationsTest, CrossTypeEquals) {
+    Square square(4.0, 2.0, 3.0);
+    Rectangle rectangle(4.0, 4.0, 2.0, 3.0);
+    ASSERT_FALSE(square.equals(&rectangle));
+    ASSERT_FALSE(rectangle.equals(&square));
+}
+
+TEST(VirtualOperationsTest, PolymorphicClone) {
+    auto square = std::make_unique<Square>(4.0, 2.0, 3.0);
+    auto rectangle = std::make_unique<Rectangle>(3.0, 5.0, 1.0, 2.0);
+    auto trapezoid = std::make_unique<Trapezoid>(2.0, 4.0, 3.0, 1.0, 2.0);
+    std::vector<std::unique_ptr<Figure>> figures;
+    figures.push_back(std::move(square));
+    figures.push_back(std::move(rectangle));
+    figures.push_back(std::move(trapezoid));
+    std::vector<std::unique_ptr<Figure>> clones;
+    for (const auto& figure : figures) {
+        clones.push_back(figure->clone());
+    }
+    for (size_t i = 0; i < figures.size(); ++i) {
+        ASSERT_TRUE(figures[i]->equals(clones[i].get()));
+    }
+}
+
 TEST(PolymorphismTest, FigurePointers) {
     auto square = std::make_shared<Square>(2.0, 1.0, 1.0);
     auto rectangle = std::make_shared<Rectangle>(3.0, 4.0, 2.0, 2.0);

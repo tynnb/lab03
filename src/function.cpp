@@ -12,6 +12,52 @@ void Square::printVertices(std::ostream& os) const {
         << centerX - half << "; " << centerY + half << ", ";
 }
 
+std::unique_ptr<Figure> Square::clone() const {
+    return std::make_unique<Square>(*this);
+}
+
+bool Square::equals(const Figure* other) const {
+    if (auto square = dynamic_cast<const Square*>(other)) {
+        return *this == *square;
+    }
+    return false;
+}
+
+Square::Square(const Square& other) 
+    : a(other.a), centerX(other.centerX), centerY(other.centerY) {}
+
+Square::Square(Square&& other) noexcept 
+    : a(std::move(other.a)), centerX(std::move(other.centerX)), centerY(std::move(other.centerY)) {
+    other.a = 0.0;
+    other.centerX = 0.0;
+    other.centerY = 0.0;
+}
+
+Square& Square::operator=(const Square& other) {
+    if (this != &other) {
+        a = other.a;
+        centerX = other.centerX;
+        centerY = other.centerY;
+    }
+    return *this;
+}
+
+Square& Square::operator=(Square&& other) noexcept {
+    if (this != &other) {
+        a = std::move(other.a);
+        centerX = std::move(other.centerX);
+        centerY = std::move(other.centerY);
+        other.a = 0.0;
+        other.centerX = 0.0;
+        other.centerY = 0.0;
+    }
+    return *this;
+}
+
+bool Square::operator==(const Square& other) const {
+    return a == other.a && centerX == other.centerX && centerY == other.centerY;
+}
+
 double Square::getCenterX() const {
     return centerX;
 }
@@ -40,6 +86,58 @@ void Rectangle::printVertices(std::ostream& os) const {
         << centerX + half1 << "; " << centerY - half2 << ", "
         << centerX + half1 << "; " << centerY + half2 << ", "
         << centerX - half1 << "; " << centerY + half2 << ", ";
+}
+
+std::unique_ptr<Figure> Rectangle::clone() const {
+    return std::make_unique<Rectangle>(*this);
+}
+
+bool Rectangle::equals(const Figure* other) const {
+    if (auto rectangle = dynamic_cast<const Rectangle*>(other)) {
+        return *this == *rectangle;
+    }
+    return false;
+}
+
+Rectangle::Rectangle(const Rectangle& other) 
+    : a(other.a), b(other.b), centerX(other.centerX), centerY(other.centerY) {}
+
+Rectangle::Rectangle(Rectangle&& other) noexcept 
+    : a(std::move(other.a)), b(std::move(other.b)), 
+      centerX(std::move(other.centerX)), centerY(std::move(other.centerY)) {
+    other.a = 0.0;
+    other.b = 0.0;
+    other.centerX = 0.0;
+    other.centerY = 0.0;
+}
+
+Rectangle& Rectangle::operator=(const Rectangle& other) {
+    if (this != &other) {
+        a = other.a;
+        b = other.b;
+        centerX = other.centerX;
+        centerY = other.centerY;
+    }
+    return *this;
+}
+
+Rectangle& Rectangle::operator=(Rectangle&& other) noexcept {
+    if (this != &other) {
+        a = std::move(other.a);
+        b = std::move(other.b);
+        centerX = std::move(other.centerX);
+        centerY = std::move(other.centerY);
+        other.a = 0.0;
+        other.b = 0.0;
+        other.centerX = 0.0;
+        other.centerY = 0.0;
+    }
+    return *this;
+}
+
+bool Rectangle::operator==(const Rectangle& other) const {
+    return a == other.a && b == other.b && 
+           centerX == other.centerX && centerY == other.centerY;
 }
 
 double Rectangle::getCenterX() const {
@@ -73,6 +171,62 @@ void Trapezoid::printVertices(std::ostream& os) const {
         << centerX - half2 << "; " << centerY + half3 << ", ";
 }
 
+std::unique_ptr<Figure> Trapezoid::clone() const {
+    return std::make_unique<Trapezoid>(*this);
+}
+
+bool Trapezoid::equals(const Figure* other) const {
+    if (auto trapezoid = dynamic_cast<const Trapezoid*>(other)) {
+        return *this == *trapezoid;
+    }
+    return false;
+}
+
+Trapezoid::Trapezoid(const Trapezoid& other) 
+    : a(other.a), b(other.b), h(other.h), centerX(other.centerX), centerY(other.centerY) {}
+
+Trapezoid::Trapezoid(Trapezoid&& other) noexcept 
+    : a(std::move(other.a)), b(std::move(other.b)), h(std::move(other.h)),
+      centerX(std::move(other.centerX)), centerY(std::move(other.centerY)) {
+    other.a = 0.0;
+    other.b = 0.0;
+    other.h = 0.0;
+    other.centerX = 0.0;
+    other.centerY = 0.0;
+}
+
+Trapezoid& Trapezoid::operator=(const Trapezoid& other) {
+    if (this != &other) {
+        a = other.a;
+        b = other.b;
+        h = other.h;
+        centerX = other.centerX;
+        centerY = other.centerY;
+    }
+    return *this;
+}
+
+Trapezoid& Trapezoid::operator=(Trapezoid&& other) noexcept {
+    if (this != &other) {
+        a = std::move(other.a);
+        b = std::move(other.b);
+        h = std::move(other.h);
+        centerX = std::move(other.centerX);
+        centerY = std::move(other.centerY);
+        other.a = 0.0;
+        other.b = 0.0;
+        other.h = 0.0;
+        other.centerX = 0.0;
+        other.centerY = 0.0;
+    }
+    return *this;
+}
+
+bool Trapezoid::operator==(const Trapezoid& other) const {
+    return a == other.a && b == other.b && h == other.h &&
+           centerX == other.centerX && centerY == other.centerY;
+}
+
 double Trapezoid::getCenterX() const {
     return centerX;
 }
@@ -91,13 +245,16 @@ std::istream& operator>>(std::istream& is, Trapezoid& trapezoid) {
 }
 
 void printMenu() {
-    std::cout << "\nMenu" << std::endl;
+    std::cout << "\n=== Figure Management System ===" << std::endl;
     std::cout << "1. Add Square" << std::endl;
     std::cout << "2. Add Rectangle" << std::endl;
     std::cout << "3. Add Trapezoid" << std::endl;
     std::cout << "4. Print all figures" << std::endl;
     std::cout << "5. Calculate total area" << std::endl;
     std::cout << "6. Delete figure by index" << std::endl;
-    std::cout << "7. Exit" << std::endl;
+    std::cout << "7. Copy figure (clone)" << std::endl;
+    std::cout << "8. Compare two figures" << std::endl;
+    std::cout << "9. Move" << std::endl;
+    std::cout << "0. Exit" << std::endl;
     std::cout << "Choose option: ";
 }

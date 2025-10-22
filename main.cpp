@@ -12,7 +12,6 @@ int main() {
                 std::cout << "Enter square parameters (side centerX centerY): ";
                 std::cin >> *square;
                 figures.push_back(std::move(square));
-                std::cout << "Square added successfully!" << std::endl;
                 break;
             }
             case 2: {
@@ -20,7 +19,6 @@ int main() {
                 std::cout << "Enter rectangle parameters (width height centerX centerY): ";
                 std::cin >> *rectangle;
                 figures.push_back(std::move(rectangle));
-                std::cout << "Rectangle added successfully!" << std::endl;
                 break;
             }
             case 3: {
@@ -28,7 +26,6 @@ int main() {
                 std::cout << "Enter trapezoid parameters (base1 base2 height centerX centerY): ";
                 std::cin >> *trapezoid;
                 figures.push_back(std::move(trapezoid));
-                std::cout << "Trapezoid added successfully!" << std::endl;
                 break;
             }
             case 4: {
@@ -66,23 +63,74 @@ int main() {
                     std::cin >> index;
                     if (index >= 1 && index <= figures.size()) {
                         figures.erase(figures.begin() + index - 1);
-                        std::cout << "Figure deleted successfully!" << std::endl;
                     }
                     else {
-                        std::cout << "Invalid index!" << std::endl;
+                        std::cout << "Invalid index" << std::endl;
                     }
                 }
                 break;
             }
             case 7: {
-                std::cout << "Goodbye!" << std::endl;
+                if (figures.empty()) {
+                    std::cout << "No figures to copy." << std::endl;
+                }
+                else {
+                    std::cout << "Enter index to copy (1-" << figures.size() << "): ";
+                    size_t index;
+                    std::cin >> index;
+                    if (index >= 1 && index <= figures.size()) {
+                        auto copied_figure = figures[index-1]->clone();
+                        figures.push_back(std::move(copied_figure));
+                    }
+                    else {
+                        std::cout << "Invalid index" << std::endl;
+                    }
+                }
+                break;
+            }
+            case 8: {
+                if (figures.size() < 2) {
+                    std::cout << "Need at least 2 figures for comparison." << std::endl;
+                }
+                else {
+                    std::cout << "Enter two indices to compare (1-" << figures.size() << "): ";
+                    size_t index1, index2;
+                    std::cin >> index1 >> index2;
+                    if (index1 >= 1 && index1 <= figures.size() && 
+                        index2 >= 1 && index2 <= figures.size()) {
+                        bool are_equal = figures[index1-1]->equals(figures[index2-1].get());
+                        std::cout << "Figures " << index1 << " and " << index2 
+                                  << " are " << (are_equal ? "EQUAL" : "DIFFERENT") << std::endl;
+                    }
+                    else {
+                        std::cout << "Invalid indices" << std::endl;
+                    }
+                }
+                break;
+            }
+            case 9: {
+                if (figures.empty()) {
+                    std::cout << "No figures to move." << std::endl;
+                }
+                else {
+                    Square square(5.0, 1.0, 2.0);
+                    std::cout << "Original square area: " << static_cast<double>(square) << std::endl;
+                    Square moved_square(std::move(square));
+                    std::cout << "After move constructor - moved square area: " << static_cast<double>(moved_square) << std::endl;
+                    Square another_square;
+                    another_square = std::move(moved_square);
+                    std::cout << "After move assignment - another square area: " << static_cast<double>(another_square) << std::endl;
+                }
+                break;
+            }
+            case 0: {
                 break;
             }
             default: {
-                std::cout << "Invalid option! Please try again." << std::endl;
+                std::cout << "Invalid option" << std::endl;
                 break;
             }
         }
-    } while (choice != 7);
+    } while (choice != 0);
     return 0;
 }
