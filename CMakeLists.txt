@@ -16,7 +16,14 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_library(${CMAKE_PROJECT_NAME}_lib src/function.cpp)
+add_library(${CMAKE_PROJECT_NAME}_lib 
+    src/function.cpp
+    src/square.cpp
+    src/rectangle.cpp
+    src/trapezoid.cpp
+)
+
+target_include_directories(${CMAKE_PROJECT_NAME}_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_PROJECT_NAME}_lib)
@@ -25,5 +32,6 @@ enable_testing()
 
 add_executable(tests test/tests03.cpp)
 target_link_libraries(tests PRIVATE ${CMAKE_PROJECT_NAME}_lib gtest gtest_main)
+target_include_directories(tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_test(NAME lab03Tests COMMAND tests)
