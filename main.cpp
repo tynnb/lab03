@@ -1,135 +1,128 @@
 #include "include/function.h"
 
+using namespace std;
+
 int main() {
-    std::vector<std::unique_ptr<Figure>> figures;
+    vector<Figure*> figures;
     int choice;
-    do {
+    while (true) {
         printMenu();
-        std::cin >> choice;
-        switch (choice) {
-            case 1: {
-                auto square = std::make_unique<Square>();
-                std::cout << "enter the parameters of the square (a centerX centerY): ";
-                std::cin >> *square;
-                figures.push_back(std::move(square));
-                break;
+        cin >> choice;
+        if (choice == 1) {
+            Square* square = new Square();
+            cout << "Enter a and center (a x y): ";
+            cin >> *square;
+            figures.push_back(square);
+        }
+        else if (choice == 2) {
+            Rectangle* rect = new Rectangle();
+            cout << "Enter a, b and center (a b x y): ";
+            cin >> *rect;
+            figures.push_back(rect);
+        }
+        else if (choice == 3) {
+            Trapezoid* trap = new Trapezoid();
+            cout << "Enter a, b, h and center (a b h x y): ";
+            cin >> *trap;
+            figures.push_back(trap);
+        }
+        else if (choice == 4) {
+            if (figures.empty()) {
+                cout << "No figures\n";
             }
-            case 2: {
-                auto rectangle = std::make_unique<Rectangle>();
-                std::cout << "enter the parameters of the rectangle (a b centerX centerY): ";
-                std::cin >> *rectangle;
-                figures.push_back(std::move(rectangle));
-                break;
-            }
-            case 3: {
-                auto trapezoid = std::make_unique<Trapezoid>();
-                std::cout << "enter the trapezoid parameters (a b h centerX centerY): ";
-                std::cin >> *trapezoid;
-                figures.push_back(std::move(trapezoid));
-                break;
-            }
-            case 4: {
-                if (figures.empty()) {
-                    std::cout << "there are no figures in the array" << std::endl;
+            else {
+                for (int i = 0; i < figures.size(); i++) {
+                    cout << "Figure " << i+1 << ":\n";
+                    cout << *figures[i] << endl;
+                    cout << "Center: (" << figures[i]->getCenterX() 
+                         << ", " << figures[i]->getCenterY() << ")\n";
+                    cout << "Area: " << (double)*figures[i] << "\n\n";
                 }
-                else {
-                    for (size_t i = 0; i < figures.size(); ++i) {
-                        std::cout << "figure " << i + 1 << ":" << std::endl;
-                        std::cout << *figures[i] << std::endl;
-                        std::cout << "geometric center: (" 
-                                  << figures[i]->getCenterX() << ", " 
-                                  << figures[i]->getCenterY() << ")" << std::endl;
-                        std::cout << "area: " << static_cast<double>(*figures[i]) << std::endl;
-                    }
-                }
-                break;
-            }
-            case 5: {
-                double totalArea = 0.0;
-                for (const auto& figure : figures) {
-                    totalArea += static_cast<double>(*figure);
-                }
-                std::cout << "total area: " << totalArea << std::endl;
-                break;
-            }
-            case 6: {
-                if (figures.empty()) {
-                    std::cout << "there are no figures to delete." << std::endl;
-                }
-                else {
-                    std::cout << "enter index to delete (1-" << figures.size() << "): ";
-                    size_t index;
-                    std::cin >> index;
-                    if (index >= 1 && index <= figures.size()) {
-                        figures.erase(figures.begin() + index - 1);
-                    }
-                    else {
-                        std::cout << "invalid index" << std::endl;
-                    }
-                }
-                break;
-            }
-            case 7: {
-                if (figures.empty()) {
-                    std::cout << "no figures to copy" << std::endl;
-                }
-                else {
-                    std::cout << "enter index to copy (1-" << figures.size() << "): ";
-                    size_t index;
-                    std::cin >> index;
-                    if (index >= 1 && index <= figures.size()) {
-                        auto copied_figure = figures[index-1]->clone();
-                        figures.push_back(std::move(copied_figure));
-                    }
-                    else {
-                        std::cout << "invalid index" << std::endl;
-                    }
-                }
-                break;
-            }
-            case 8: {
-                if (figures.size() < 2) {
-                    std::cout << "at least two figures are needed for comparison" << std::endl;
-                }
-                else {
-                    std::cout << "enter two indexes to compare (1-" << figures.size() << "): ";
-                    size_t index1, index2;
-                    std::cin >> index1 >> index2;
-                    if (index1 >= 1 && index1 <= figures.size() && 
-                        index2 >= 1 && index2 <= figures.size()) {
-                        bool are_equal = figures[index1-1]->equals(figures[index2-1].get());
-                        std::cout << "figures " << index1 << " and " << index2 
-                                  << " are " << (are_equal ? "EQUAL" : "DIFFERENT") << std::endl;
-                    }
-                    else {
-                        std::cout << "invalid indices" << std::endl;
-                    }
-                }
-                break;
-            }
-            case 9: {
-                if (figures.empty()) {
-                    std::cout << "no figures to move" << std::endl;
-                }
-                else {
-                    Square square(5.0, 1.0, 2.0);
-                    std::cout << "original square area: " << static_cast<double>(square) << std::endl;
-                    Square moved_square(std::move(square));
-                    std::cout << "after move constructor - moved square area: " << static_cast<double>(moved_square) << std::endl;
-                    Square another_square;
-                    another_square = std::move(moved_square);
-                    std::cout << "after move assignment - another square area: " << static_cast<double>(another_square) << std::endl;
-                }
-                break;
-            }
-            case 0: {
-                break;
-            }
-            default: {
-                std::cout << "invalid option" << std::endl;
-                break;
             }
         }
-    } while (choice != 0);
+        else if (choice == 5) {
+            double total = 0;
+            for (int i = 0; i < figures.size(); i++) {
+                total += (double)*figures[i];
+            }
+            cout << "Total area: " << total << endl;
+        }
+        else if (choice == 6) {
+            if (figures.empty()) {
+                cout << "No figures\n";
+            }
+            else {
+                int index;
+                cout << "Enter index (1-" << figures.size() << "): ";
+                cin >> index;
+                if (index >= 1 && index <= figures.size()) {
+                    delete figures[index-1];
+                    figures.erase(figures.begin() + index - 1);
+                    cout << "Deleted\n";
+                }
+                else {
+                    cout << "Wrong index\n";
+                }
+            }
+        }
+        else if (choice == 7) {
+            if (figures.empty()) {
+                cout << "No figures\n";
+            }
+            else {
+                int index;
+                cout << "Enter index to copy (1-" << figures.size() << "): ";
+                cin >> index;
+                if (index >= 1 && index <= figures.size()) {
+                    Figure* copy = figures[index-1]->clone().release();
+                    figures.push_back(copy);
+                    cout << "Copied\n";
+                }
+                else {
+                    cout << "Wrong index\n";
+                }
+            }
+        }
+        else if (choice == 8) {
+            if (figures.size() < 2) {
+                cout << "Need 2 figures\n";
+            }
+            else {
+                int i1, i2;
+                cout << "Enter two indices: ";
+                cin >> i1 >> i2;
+                if (i1 >= 1 && i1 <= figures.size() && i2 >= 1 && i2 <= figures.size()) {
+                    if (figures[i1-1]->equals(figures[i2-1])) {
+                        cout << "Figures are equal\n";
+                    }
+                    else {
+                        cout << "Figures are different\n";
+                    }
+                }
+                else {
+                    cout << "Wrong indices\n";
+                }
+            }
+        }
+        else if (choice == 9) {
+            Square s1(3, 0, 0);
+            Square s2(s1);
+            Square s3;
+            s3 = s1;
+            cout << "All squares have area: " << (double)s1 << endl;
+            if (s1 == s2) {
+                cout << "Copy works correctly\n";
+            }
+        }
+        else if (choice == 0) {
+            break;
+        }
+        else {
+            cout << "Wrong choice\n";
+        }
+    }
+    for (int i = 0; i < figures.size(); i++) {
+        delete figures[i];
+    }
     return 0;
 }
