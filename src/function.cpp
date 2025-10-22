@@ -245,16 +245,15 @@ std::istream& operator>>(std::istream& is, Trapezoid& trapezoid) {
 }
 
 void printMenu() {
-    std::cout << "\n=== Figure Management System ===" << std::endl;
-    std::cout << "1. Add Square" << std::endl;
-    std::cout << "2. Add Rectangle" << std::endl;
-    std::cout << "3. Add Trapezoid" << std::endl;
-    std::cout << "4. Print all figures" << std::endl;
-    std::cout << "5. Calculate total area" << std::endl;
-    std::cout << "6. Delete figure by index" << std::endl;
-    std::cout << "7. Copy figure (clone)" << std::endl;
-    std::cout << "8. Compare two figures" << std::endl;
-    std::cout << "9. Move" << std::endl;
-    std::cout << "0. Exit" << std::endl;
-    std::cout << "Choose option: ";
+    std::cout << "1. add a square" << std::endl;
+    std::cout << "2. add a rectangle" << std::endl;
+    std::cout << "3. add a trapezoid" << std::endl;
+    std::cout << "4. print all figures" << std::endl;
+    std::cout << "5. calculate the total area" << std::endl;
+    std::cout << "6. delete a figure by index" << std::endl;
+    std::cout << "7. copy a figure" << std::endl;
+    std::cout << "8. compare two figures" << std::endl;
+    std::cout << "9. move" << std::endl;
+    std::cout << "0. exit" << std::endl;
+    std::cout << "choose option: ";
 }
