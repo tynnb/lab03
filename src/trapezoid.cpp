@@ -1,5 +1,13 @@
 #include "../include/trapezoid.h"
 
+Trapezoid::Trapezoid(double base1, double base2, double height) {
+    this->a = base1;
+    this->b = base2;
+    this->h = height;
+    this->centerX = 0.0;
+    this->centerY = 0.0;
+}
+
 Trapezoid::Trapezoid(double a, double b, double h, double centerX, double centerY) {
     this->a = a;
     this->b = b;
@@ -96,6 +104,8 @@ double Trapezoid::calculateArea() const {
 }
 
 std::istream& operator>>(std::istream& is, Trapezoid& trapezoid) {
-    is >> trapezoid.a >> trapezoid.b >> trapezoid.h >> trapezoid.centerX >> trapezoid.centerY;
+    is >> trapezoid.a >> trapezoid.b >> trapezoid.h;
+    trapezoid.centerX = 0.0;
+    trapezoid.centerY = 0.0;
     return is;
 }

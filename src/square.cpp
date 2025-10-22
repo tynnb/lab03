@@ -1,5 +1,11 @@
 #include "../include/square.h"
 
+Square::Square(double side) {
+    this->a = side;
+    this->centerX = 0.0;
+    this->centerY = 0.0;
+}
+
 Square::Square(double a, double centerX, double centerY) {
     this->a = a;
     this->centerX = centerX;
@@ -78,6 +84,8 @@ double Square::calculateArea() const {
 }
 
 std::istream& operator>>(std::istream& is, Square& square) {
-    is >> square.a >> square.centerX >> square.centerY;
+    is >> square.a;
+    square.centerX = 0.0;
+    square.centerY = 0.0;
     return is;
 }

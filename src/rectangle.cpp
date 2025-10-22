@@ -1,5 +1,12 @@
 #include "../include/rectangle.h"
 
+Rectangle::Rectangle(double width, double height) {
+    this->a = width;
+    this->b = height;
+    this->centerX = 0.0;
+    this->centerY = 0.0;
+}
+
 Rectangle::Rectangle(double a, double b, double centerX, double centerY) {
     this->a = a;
     this->b = b;
@@ -88,6 +95,8 @@ double Rectangle::calculateArea() const {
 }
 
 std::istream& operator>>(std::istream& is, Rectangle& rectangle) {
-    is >> rectangle.a >> rectangle.b >> rectangle.centerX >> rectangle.centerY;
+    is >> rectangle.a >> rectangle.b;
+    rectangle.centerX = 0.0;
+    rectangle.centerY = 0.0;
     return is;
 }

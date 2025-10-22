@@ -7,6 +7,7 @@
 class Square : public Figure {
 public:
     Square() = default;
+    Square(double side);
     Square(double a, double centerX, double centerY);
     Square(const Square& other);
     Square(Square&& other) noexcept;

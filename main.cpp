@@ -24,7 +24,7 @@ int main() {
         switch (choice) {
             case 1: {
                 Square* square = new Square();
-                cout << "Enter side and center (a x y): ";
+                cout << "Enter side length: ";
                 if (!(cin >> *square)) {
                     cout << "Invalid input! Square not added.\n";
                     delete square;
@@ -37,7 +37,7 @@ int main() {
             }
             case 2: {
                 Rectangle* rect = new Rectangle();
-                cout << "Enter width, height and center (a b x y): ";
+                cout << "Enter width and height: ";
                 if (!(cin >> *rect)) {
                     cout << "Invalid input! Rectangle not added.\n";
                     delete rect;
@@ -50,7 +50,7 @@ int main() {
             }
             case 3: {
                 Trapezoid* trap = new Trapezoid();
-                cout << "Enter bases, height and center (a b h x y): ";
+                cout << "Enter base1, base2 and height: ";
                 if (!(cin >> *trap)) {
                     cout << "Invalid input! Trapezoid not added.\n";
                     delete trap;
@@ -153,18 +153,19 @@ int main() {
                 break;
             }
             case 9: {
-                Square s1(3, 0, 0);
-                Square s2(s1);
+                Square s1(5, 1, 2);
+                cout << "Original square area: " << (double)s1 << endl;
+                Square s2(std::move(s1));
+                cout << "After move constructor:\n";
+                cout << "s2 area: " << (double)s2 << endl;
                 Square s3;
-                s3 = s1;
-                cout << "All squares have area: " << (double)s1 << endl;
-                if (s1 == s2) {
-                    cout << "Copy works correctly\n";
-                }
+                s3 = std::move(s2);
+                cout << "After move assignment:\n";
+                cout << "s3 area: " << (double)s3 << endl;
+                cout << "Move operations demonstrated successfully!\n";
                 break;
             }
             case 0: {
-                cout << "Goodbye!\n";
                 break;
             }
             default: {

@@ -7,6 +7,7 @@
 class Rectangle : public Figure {
 public:
     Rectangle() = default;
+    Rectangle(double width, double height);
     Rectangle(double a, double b, double centerX, double centerY);
     Rectangle(const Rectangle& other);
     Rectangle(Rectangle&& other) noexcept;

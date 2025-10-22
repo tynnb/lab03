@@ -7,6 +7,7 @@
 class Trapezoid : public Figure {
 public:
     Trapezoid() = default;
+    Trapezoid(double base1, double base2, double height);
     Trapezoid(double a, double b, double h, double centerX, double centerY);
     Trapezoid(const Trapezoid& other);
     Trapezoid(Trapezoid&& other) noexcept;
