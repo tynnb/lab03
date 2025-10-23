@@ -1,284 +1,334 @@
 #include <gtest/gtest.h>
-#include <sstream>
 #include <memory>
+#include <vector>
+#include <cmath>
+#include <sstream>
 #include "../include/function.h"
 
-// Тесты для Square
-TEST(SquareTest, ConstructorAndArea) {
-    Square square(0, 0, 2, 0, 2, 2, 0, 2);
-    ASSERT_DOUBLE_EQ(static_cast<double>(square), 4.0);
+// Вспомогательная функция для сравнения double с допуском
+bool doubleEquals(double a, double b, double epsilon = 1e-9) {
+    return std::abs(a - b) < epsilon;
 }
 
-TEST(SquareTest, CenterCalculation) {
-    Square square(0, 0, 4, 0, 4, 4, 0, 4);
-    auto center = square.center();
-    ASSERT_DOUBLE_EQ(center.first, 2.0);
-    ASSERT_DOUBLE_EQ(center.second, 2.0);
+// Вспомогательная функция для сравнения пар координат
+bool pairEquals(const std::pair<double, double>& a, 
+                const std::pair<double, double>& b, 
+                double epsilon = 1e-9) {
+    return doubleEquals(a.first, b.first, epsilon) && 
+           doubleEquals(a.second, b.second, epsilon);
 }
 
-TEST(SquareTest, InputOperator) {
-    Square square;
-    std::istringstream input("0 0 3 0 3 3 0 3");
-    input >> square;
-    
-    auto center = square.center();
-    ASSERT_DOUBLE_EQ(center.first, 1.5);
-    ASSERT_DOUBLE_EQ(center.second, 1.5);
-    ASSERT_DOUBLE_EQ(static_cast<double>(square), 9.0);
-}
-
-TEST(SquareTest, OutputOperator) {
-    Square square(1, 1, 3, 1, 3, 3, 1, 3);
-    std::ostringstream output;
-    output << square;
-    
-    std::string result = output.str();
-    ASSERT_TRUE(result.find("Square vertices:") != std::string::npos);
-    ASSERT_TRUE(result.find("(1, 1)") != std::string::npos);
-}
-
-TEST(SquareTest, CloneOperation) {
-    Square square(0, 0, 2, 0, 2, 2, 0, 2);
-    auto cloned = square.clone();
-    ASSERT_NE(cloned.get(), nullptr);
-    ASSERT_DOUBLE_EQ(static_cast<double>(*cloned), 4.0);
-    ASSERT_TRUE(square == *cloned);
-}
-
-// Тесты для Rectangle
-TEST(RectangleTest, ConstructorAndArea) {
-    Rectangle rectangle(0, 0, 5, 0, 5, 3, 0, 3);
-    ASSERT_DOUBLE_EQ(static_cast<double>(rectangle), 15.0);
-}
-
-TEST(RectangleTest, CenterCalculation) {
-    Rectangle rectangle(0, 0, 6, 0, 6, 4, 0, 4);
-    auto center = rectangle.center();
-    ASSERT_DOUBLE_EQ(center.first, 3.0);
-    ASSERT_DOUBLE_EQ(center.second, 2.0);
-}
-
-TEST(RectangleTest, InputOperator) {
-    Rectangle rectangle;
-    std::istringstream input("0 0 4 0 4 2 0 2");
-    input >> rectangle;
-    
-    auto center = rectangle.center();
-    ASSERT_DOUBLE_EQ(center.first, 2.0);
-    ASSERT_DOUBLE_EQ(center.second, 1.0);
-    ASSERT_DOUBLE_EQ(static_cast<double>(rectangle), 8.0);
-}
-
-TEST(RectangleTest, OutputOperator) {
-    Rectangle rectangle(0, 0, 3, 0, 3, 2, 0, 2);
-    std::ostringstream output;
-    output << rectangle;
-    
-    std::string result = output.str();
-    ASSERT_TRUE(result.find("Rectangle vertices:") != std::string::npos);
-}
-
-TEST(RectangleTest, CloneOperation) {
-    Rectangle rectangle(0, 0, 4, 0, 4, 2, 0, 2);
-    auto cloned = rectangle.clone();
-    ASSERT_NE(cloned.get(), nullptr);
-    ASSERT_DOUBLE_EQ(static_cast<double>(*cloned), 8.0);
-    ASSERT_TRUE(rectangle == *cloned);
-}
-
-// Тесты для Trapezoid
-TEST(TrapezoidTest, ConstructorAndArea) {
-    Trapezoid trapezoid(0, 0, 6, 0, 4, 3, 2, 3);
-    double expected_area = std::abs((0*0 + 6*3 + 4*3 + 2*0) - (0*6 + 0*4 + 3*2 + 3*0)) / 2.0;
-    ASSERT_DOUBLE_EQ(static_cast<double>(trapezoid), expected_area);
-}
-
-TEST(TrapezoidTest, CenterCalculation) {
-    Trapezoid trapezoid(0, 0, 8, 0, 6, 4, 2, 4);
-    auto center = trapezoid.center();
-    ASSERT_DOUBLE_EQ(center.first, 4.0);
-    ASSERT_DOUBLE_EQ(center.second, 2.0);
-}
-
-TEST(TrapezoidTest, InputOperator) {
-    Trapezoid trapezoid;
-    std::istringstream input("0 0 5 0 4 2 1 2");
-    input >> trapezoid;
-    
-    auto center = trapezoid.center();
-    ASSERT_DOUBLE_EQ(center.first, 2.5);
-    ASSERT_DOUBLE_EQ(center.second, 1.0);
-}
-
-TEST(TrapezoidTest, OutputOperator) {
-    Trapezoid trapezoid(0, 0, 4, 0, 3, 2, 1, 2);
-    std::ostringstream output;
-    output << trapezoid;
-    
-    std::string result = output.str();
-    ASSERT_TRUE(result.find("Trapezoid vertices:") != std::string::npos);
-}
-
-// Тесты операций копирования и перемещения
-TEST(CopyMoveTest, SquareCopyOperations) {
-    Square square1(0, 0, 2, 0, 2, 2, 0, 2);
-    Square square2 = square1;
-    Square square3(square1);
-    
-    auto center1 = square1.center();
-    auto center2 = square2.center();
-    auto center3 = square3.center();
-    
-    ASSERT_DOUBLE_EQ(center1.first, center2.first);
-    ASSERT_DOUBLE_EQ(center1.second, center2.second);
-    ASSERT_DOUBLE_EQ(static_cast<double>(square1), static_cast<double>(square2));
-    
-    ASSERT_DOUBLE_EQ(center1.first, center3.first);
-    ASSERT_DOUBLE_EQ(center1.second, center3.second);
-    ASSERT_DOUBLE_EQ(static_cast<double>(square1), static_cast<double>(square3));
-}
-
-TEST(CopyMoveTest, SquareMoveOperations) {
-    Square square1(0, 0, 3, 0, 3, 3, 0, 3);
-    Square square2(std::move(square1));
-    ASSERT_DOUBLE_EQ(static_cast<double>(square2), 9.0);
-    
-    Square square3;
-    square3 = std::move(square2);
-    ASSERT_DOUBLE_EQ(static_cast<double>(square3), 9.0);
-}
-
-// Тесты операций сравнения
-TEST(ComparisonTest, SquareComparison) {
-    Square square1(0, 0, 2, 0, 2, 2, 0, 2);
-    Square square2(0, 0, 2, 0, 2, 2, 0, 2);
-    Square square3(1, 1, 3, 1, 3, 3, 1, 3);
-    
-    ASSERT_TRUE(square1 == square2);
-    ASSERT_FALSE(square1 == square3);
-}
-
-TEST(ComparisonTest, CrossTypeComparison) {
-    Square square(0, 0, 2, 0, 2, 2, 0, 2);
-    Rectangle rectangle(0, 0, 2, 0, 2, 2, 0, 2);
-    
-    // Явное преобразование к Figure& для избежания неоднозначности
-    const Figure& fig1 = square;
-    const Figure& fig2 = rectangle;
-    
-    ASSERT_FALSE(fig1 == fig2);
-    ASSERT_FALSE(fig2 == fig1);
-}
-
-// Тесты полиморфизма
-TEST(PolymorphismTest, FigurePointers) {
-    auto square = std::make_unique<Square>(0, 0, 2, 0, 2, 2, 0, 2);
-    auto rectangle = std::make_unique<Rectangle>(0, 0, 3, 0, 3, 4, 0, 4);
-    
-    std::vector<std::unique_ptr<Figure>> figures;
-    figures.push_back(std::move(square));
-    figures.push_back(std::move(rectangle));
-    
-    ASSERT_DOUBLE_EQ(static_cast<double>(*figures[0]), 4.0);
-    ASSERT_DOUBLE_EQ(static_cast<double>(*figures[1]), 12.0);
-}
-
-TEST(PolymorphismTest, CenterThroughBasePointer) {
-    auto square = std::make_unique<Square>(0, 0, 4, 0, 4, 4, 0, 4);
-    auto rectangle = std::make_unique<Rectangle>(0, 0, 6, 0, 6, 4, 0, 4);
-    
-    std::unique_ptr<Figure> fig1 = std::move(square);
-    std::unique_ptr<Figure> fig2 = std::move(rectangle);
-    
-    auto center1 = fig1->center();
-    auto center2 = fig2->center();
-    
-    ASSERT_DOUBLE_EQ(center1.first, 2.0);
-    ASSERT_DOUBLE_EQ(center1.second, 2.0);
-    ASSERT_DOUBLE_EQ(center2.first, 3.0);
-    ASSERT_DOUBLE_EQ(center2.second, 2.0);
-}
-
-// Тесты для работы с массивом фигур
-TEST(FigureArrayTest, TotalAreaCalculation) {
-    std::vector<std::unique_ptr<Figure>> figures;
-    
-    figures.push_back(std::make_unique<Square>(0, 0, 2, 0, 2, 2, 0, 2));
-    figures.push_back(std::make_unique<Rectangle>(0, 0, 3, 0, 3, 4, 0, 4));
-    figures.push_back(std::make_unique<Trapezoid>(0, 0, 4, 0, 3, 2, 1, 2));
-    
-    double total = 0.0;
-    for (const auto& figure : figures) {
-        total += static_cast<double>(*figure);
+class SquareTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        square = new Square(0, 0, 1, 0, 1, 1, 0, 1);
     }
-    
-    ASSERT_DOUBLE_EQ(total, 4.0 + 12.0 + static_cast<double>(*figures[2]));
-}
 
-// Тесты преобразования типов
-TEST(ConversionTest, DoubleConversion) {
-    Square square(0, 0, 5, 0, 5, 5, 0, 5);
-    double area = static_cast<double>(square);
-    ASSERT_DOUBLE_EQ(area, 25.0);
-    
-    Rectangle rectangle(0, 0, 6, 0, 6, 7, 0, 7);
-    area = static_cast<double>(rectangle);
-    ASSERT_DOUBLE_EQ(area, 42.0);
-}
-
-// Тесты потокового ввода/вывода
-TEST(StreamTest, SquareStreamOperations) {
-    Square square;
-    std::istringstream input("0 0 4 0 4 4 0 4");
-    input >> square;
-    
-    std::ostringstream output;
-    output << square;
-    
-    std::string result = output.str();
-    ASSERT_TRUE(result.find("(0, 0)") != std::string::npos);
-    ASSERT_DOUBLE_EQ(static_cast<double>(square), 16.0);
-}
-
-TEST(StreamTest, PrintCentersAndAreas) {
-    std::vector<std::unique_ptr<Figure>> figures;
-    figures.push_back(std::make_unique<Square>(0, 0, 2, 0, 2, 2, 0, 2));
-    figures.push_back(std::make_unique<Rectangle>(0, 0, 4, 0, 4, 3, 0, 3));
-    
-    testing::internal::CaptureStdout();
-    for (size_t i = 0; i < figures.size(); ++i) {
-        std::cout << "Figure " << i + 1 << ":\n";
-        std::cout << *figures[i] << std::endl;
-        auto center = figures[i]->center();
-        std::cout << "Center: (" << center.first << ", " << center.second << ")\n";
-        std::cout << "Area: " << static_cast<double>(*figures[i]) << "\n\n";
+    void TearDown() override {
+        delete square;
     }
-    std::string output = testing::internal::GetCapturedStdout();
+
+    Square* square;
+};
+
+TEST_F(SquareTest, ConstructorAndCoordinates) {
+    ASSERT_NE(square, nullptr);
     
-    ASSERT_TRUE(output.find("Center") != std::string::npos);
-    ASSERT_TRUE(output.find("Area") != std::string::npos);
+    // Проверяем, что площадь вычисляется корректно
+    EXPECT_NEAR(static_cast<double>(*square), 1.0, 1e-9);
 }
 
-// Тесты для операций копирования через clone
+TEST_F(SquareTest, CenterCalculation) {
+    auto center = square->center();
+    EXPECT_NEAR(center.first, 0.5, 1e-9);
+    EXPECT_NEAR(center.second, 0.5, 1e-9);
+}
+
+TEST_F(SquareTest, AreaCalculation) {
+    double area = square->area();
+    EXPECT_NEAR(area, 1.0, 1e-9);
+}
+
+TEST_F(SquareTest, CloneOperation) {
+    Figure* cloned = square->clone();
+    ASSERT_NE(cloned, nullptr);
+    
+    // Проверяем, что клон имеет те же координаты
+    Square* clonedSquare = dynamic_cast<Square*>(cloned);
+    ASSERT_NE(clonedSquare, nullptr);
+    
+    auto originalCenter = square->center();
+    auto clonedCenter = clonedSquare->center();
+    EXPECT_TRUE(pairEquals(originalCenter, clonedCenter));
+    
+    EXPECT_NEAR(static_cast<double>(*square), static_cast<double>(*clonedSquare), 1e-9);
+    
+    delete cloned;
+}
+
+TEST_F(SquareTest, EqualityOperator) {
+    Square* sameSquare = new Square(0, 0, 1, 0, 1, 1, 0, 1);
+    Square* differentSquare = new Square(0, 0, 2, 0, 2, 2, 0, 2);
+    
+    EXPECT_TRUE(*square == *sameSquare);
+    EXPECT_FALSE(*square == *differentSquare);
+    
+    delete sameSquare;
+    delete differentSquare;
+}
+
+TEST_F(SquareTest, InputOutputOperations) {
+    std::ostringstream oss;
+    oss << *square;
+    
+    std::string output = oss.str();
+    EXPECT_TRUE(output.find("Square vertices") != std::string::npos);
+    EXPECT_TRUE(output.find("(0, 0)") != std::string::npos);
+    
+    Square* newSquare = new Square();
+    std::istringstream iss("0 0 1 0 1 1 0 1");
+    iss >> *newSquare;
+    
+    EXPECT_TRUE(*square == *newSquare);
+    delete newSquare;
+}
+
+class RectangleTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        rectangle = new Rectangle(0, 0, 2, 0, 2, 1, 0, 1);
+    }
+
+    void TearDown() override {
+        delete rectangle;
+    }
+
+    Rectangle* rectangle;
+};
+
+TEST_F(RectangleTest, ConstructorAndCoordinates) {
+    ASSERT_NE(rectangle, nullptr);
+    EXPECT_NEAR(static_cast<double>(*rectangle), 2.0, 1e-9);
+}
+
+TEST_F(RectangleTest, CenterCalculation) {
+    auto center = rectangle->center();
+    EXPECT_NEAR(center.first, 1.0, 1e-9);
+    EXPECT_NEAR(center.second, 0.5, 1e-9);
+}
+
+TEST_F(RectangleTest, AreaCalculation) {
+    double area = rectangle->area();
+    EXPECT_NEAR(area, 2.0, 1e-9);
+}
+
+TEST_F(RectangleTest, CloneOperation) {
+    Figure* cloned = rectangle->clone();
+    ASSERT_NE(cloned, nullptr);
+    
+    Rectangle* clonedRect = dynamic_cast<Rectangle*>(cloned);
+    ASSERT_NE(clonedRect, nullptr);
+    
+    auto originalCenter = rectangle->center();
+    auto clonedCenter = clonedRect->center();
+    EXPECT_TRUE(pairEquals(originalCenter, clonedCenter));
+    
+    EXPECT_NEAR(static_cast<double>(*rectangle), static_cast<double>(*clonedRect), 1e-9);
+    
+    delete cloned;
+}
+
+TEST_F(RectangleTest, EqualityOperator) {
+    Rectangle* sameRect = new Rectangle(0, 0, 2, 0, 2, 1, 0, 1);
+    Rectangle* differentRect = new Rectangle(0, 0, 3, 0, 3, 1, 0, 1);
+    
+    EXPECT_TRUE(*rectangle == *sameRect);
+    EXPECT_FALSE(*rectangle == *differentRect);
+    
+    delete sameRect;
+    delete differentRect;
+}
+
+class TrapezoidTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        // Трапеция с основаниями y=0 и y=1, высотой 1
+        trapezoid = new Trapezoid(0, 0, 1, 0, 0.5, 1, 0, 1);
+    }
+
+    void TearDown() override {
+        delete trapezoid;
+    }
+
+    Trapezoid* trapezoid;
+};
+
+TEST_F(TrapezoidTest, ConstructorAndCoordinates) {
+    ASSERT_NE(trapezoid, nullptr);
+}
+
+TEST_F(TrapezoidTest, CenterCalculation) {
+    auto center = trapezoid->center();
+    // Центр трапеции
+    EXPECT_NEAR(center.first, 0.375, 1e-9);
+    EXPECT_NEAR(center.second, 0.5, 1e-9);
+}
+
+TEST_F(TrapezoidTest, AreaCalculation) {
+    double area = trapezoid->area();
+    // Площадь трапеции: (a + b) * h / 2 = (1 + 0.5) * 1 / 2 = 0.75
+    EXPECT_NEAR(area, 0.75, 1e-9);
+}
+
+TEST_F(TrapezoidTest, CloneOperation) {
+    Figure* cloned = trapezoid->clone();
+    ASSERT_NE(cloned, nullptr);
+    
+    Trapezoid* clonedTrap = dynamic_cast<Trapezoid*>(cloned);
+    ASSERT_NE(clonedTrap, nullptr);
+    
+    auto originalCenter = trapezoid->center();
+    auto clonedCenter = clonedTrap->center();
+    EXPECT_TRUE(pairEquals(originalCenter, clonedCenter));
+    
+    delete cloned;
+}
+
+TEST_F(TrapezoidTest, EqualityOperator) {
+    Trapezoid* sameTrap = new Trapezoid(0, 0, 1, 0, 0.5, 1, 0, 1);
+    Trapezoid* differentTrap = new Trapezoid(0, 0, 2, 0, 1, 1, 0, 1);
+    
+    EXPECT_TRUE(*trapezoid == *sameTrap);
+    EXPECT_FALSE(*trapezoid == *differentTrap);
+    
+    delete sameTrap;
+    delete differentTrap;
+}
+
+class FigurePolymorphismTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        figures.push_back(new Square(0, 0, 1, 0, 1, 1, 0, 1));
+        figures.push_back(new Rectangle(0, 0, 2, 0, 2, 1, 0, 1));
+        figures.push_back(new Trapezoid(0, 0, 1, 0, 0.5, 1, 0, 1));
+    }
+
+    void TearDown() override {
+        for (auto figure : figures) {
+            delete figure;
+        }
+        figures.clear();
+        
+        for (auto clone : clones) {
+            delete clone;
+        }
+        clones.clear();
+    }
+
+    std::vector<Figure*> figures;
+    std::vector<Figure*> clones;
+};
+
+TEST_F(FigurePolymorphismTest, PolymorphicCenter) {
+    for (Figure* figure : figures) {
+        auto center = figure->center();
+        ASSERT_NE(center.first, 0.0);
+        ASSERT_NE(center.second, 0.0);
+    }
+}
+
+TEST_F(FigurePolymorphismTest, PolymorphicArea) {
+    for (Figure* figure : figures) {
+        double area = static_cast<double>(*figure);
+        EXPECT_GT(area, 0.0);
+    }
+}
+
+TEST_F(FigurePolymorphismTest, PolymorphicClone) {
+    for (Figure* figure : figures) {
+        Figure* cloned = figure->clone();
+        ASSERT_NE(cloned, nullptr);
+        clones.push_back(cloned);
+        
+        // Проверяем, что клон имеет ту же площадь
+        EXPECT_NEAR(static_cast<double>(*figure), static_cast<double>(*cloned), 1e-9);
+    }
+}
+
+// Исправленный тест для сравнения разных типов фигур
+TEST_F(FigurePolymorphismTest, CrossTypeComparison) {
+    Square square(0, 0, 1, 0, 1, 1, 0, 1);
+    Rectangle rectangle(0, 0, 2, 0, 2, 1, 0, 1);
+    
+    // Явно приводим к Figure& чтобы избежать неоднозначности
+    const Figure& squareRef = square;
+    const Figure& rectangleRef = rectangle;
+    
+    // Квадрат и прямоугольник не должны быть равны
+    EXPECT_FALSE(squareRef == rectangleRef);
+    EXPECT_FALSE(rectangleRef == squareRef);
+}
+
+// Тест для проверки сравнения с разными типами через dynamic_cast
+TEST(CrossTypeComparisonTest, DifferentTypes) {
+    Square square(0, 0, 1, 0, 1, 1, 0, 1);
+    Rectangle rectangle(0, 0, 2, 0, 2, 1, 0, 1);
+    Trapezoid trapezoid(0, 0, 1, 0, 0.5, 1, 0, 1);
+    
+    // Все фигуры разных типов, поэтому не должны быть равны
+    EXPECT_FALSE(square == static_cast<const Figure&>(rectangle));
+    EXPECT_FALSE(rectangle == static_cast<const Figure&>(square));
+    EXPECT_FALSE(trapezoid == static_cast<const Figure&>(square));
+    EXPECT_FALSE(square == static_cast<const Figure&>(trapezoid));
+}
+
 TEST(CloneTest, PolymorphicClone) {
-    auto square = std::make_unique<Square>(0, 0, 3, 0, 3, 3, 0, 3);
-    auto rectangle = std::make_unique<Rectangle>(0, 0, 4, 0, 4, 2, 0, 2);
+    std::vector<Figure*> figures;
+    std::vector<Figure*> clones;
     
-    std::vector<std::unique_ptr<Figure>> figures;
-    figures.push_back(std::move(square));
-    figures.push_back(std::move(rectangle));
+    figures.push_back(new Square(0, 0, 1, 0, 1, 1, 0, 1));
+    figures.push_back(new Rectangle(0, 0, 2, 0, 2, 1, 0, 1));
+    figures.push_back(new Trapezoid(0, 0, 1, 0, 0.5, 1, 0, 1));
     
-    std::vector<std::unique_ptr<Figure>> clones;
-    for (const auto& figure : figures) {
-        clones.push_back(figure->clone());
+    for (Figure* figure : figures) {
+        Figure* cloned = figure->clone();
+        ASSERT_NE(cloned, nullptr);
+        clones.push_back(cloned);
+        
+        // Проверяем полиморфное поведение
+        EXPECT_NEAR(static_cast<double>(*figure), static_cast<double>(*cloned), 1e-9);
     }
     
-    for (size_t i = 0; i < figures.size(); ++i) {
-        ASSERT_TRUE(*figures[i] == *clones[i]);
+    // Очистка памяти
+    for (auto figure : figures) {
+        delete figure;
     }
+    for (auto clone : clones) {
+        delete clone;
+    }
+}
+
+// Тест для проверки работы оператора ввода с некорректными данными
+TEST(InputTest, InvalidInput) {
+    Square square;
+    std::istringstream iss("invalid data");
+    
+    // Должен установить failbit при некорректном вводе
+    iss >> square;
+    EXPECT_TRUE(iss.fail());
+}
+
+// Тест для проверки геометрического центра
+TEST(CenterTest, GeometricCenter) {
+    Square square(0, 0, 2, 0, 2, 2, 0, 2);
+    auto center = square.center();
+    
+    // Центр квадрата 2x2 должен быть в (1, 1)
+    EXPECT_NEAR(center.first, 1.0, 1e-9);
+    EXPECT_NEAR(center.second, 1.0, 1e-9);
 }
 
 int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

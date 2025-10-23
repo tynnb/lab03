@@ -144,8 +144,8 @@ int main() {
                         std::cout << "Invalid input!\n";
                         clearInput();
                     } else if (index >= 1 && index <= figuresCount) {
-                        auto copy_ptr = figures[index-1]->clone();
-                        figures[figuresCount] = copy_ptr.release();
+                        Figure* copy_ptr = figures[index-1]->clone();
+                        figures[figuresCount] = copy_ptr;
                         figuresCount++;
                         std::cout << "Figure copied successfully! Total figures: " << figuresCount << "\n";
                     } else {

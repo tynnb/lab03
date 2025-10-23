@@ -16,11 +16,9 @@ Square::Square(const Square& other)
       center_x(other.center_x), center_y(other.center_y) {}
 
 Square::Square(Square&& other) noexcept 
-    : x1(std::move(other.x1)), y1(std::move(other.y1)),
-      x2(std::move(other.x2)), y2(std::move(other.y2)),
-      x3(std::move(other.x3)), y3(std::move(other.y3)),
-      x4(std::move(other.x4)), y4(std::move(other.y4)),
-      center_x(std::move(other.center_x)), center_y(std::move(other.center_y)) {
+    : x1(other.x1), y1(other.y1), x2(other.x2), y2(other.y2),
+      x3(other.x3), y3(other.y3), x4(other.x4), y4(other.y4),
+      center_x(other.center_x), center_y(other.center_y) {
     other.x1 = other.y1 = other.x2 = other.y2 = other.x3 = other.y3 = other.x4 = other.y4 = 0;
     other.center_x = other.center_y = 0;
 }
@@ -39,12 +37,12 @@ Square& Square::operator=(const Square& other) {
 
 Square& Square::operator=(Square&& other) noexcept {
     if (this != &other) {
-        x1 = std::move(other.x1); y1 = std::move(other.y1);
-        x2 = std::move(other.x2); y2 = std::move(other.y2);
-        x3 = std::move(other.x3); y3 = std::move(other.y3);
-        x4 = std::move(other.x4); y4 = std::move(other.y4);
-        center_x = std::move(other.center_x);
-        center_y = std::move(other.center_y);
+        x1 = other.x1; y1 = other.y1;
+        x2 = other.x2; y2 = other.y2;
+        x3 = other.x3; y3 = other.y3;
+        x4 = other.x4; y4 = other.y4;
+        center_x = other.center_x;
+        center_y = other.center_y;
         other.x1 = other.y1 = other.x2 = other.y2 = other.x3 = other.y3 = other.x4 = other.y4 = 0;
         other.center_x = other.center_y = 0;
     }
@@ -59,10 +57,11 @@ bool Square::operator==(const Figure& other) const {
 }
 
 bool Square::operator==(const Square& other) const {
-    return x1 == other.x1 && y1 == other.y1 &&
-           x2 == other.x2 && y2 == other.y2 &&
-           x3 == other.x3 && y3 == other.y3 &&
-           x4 == other.x4 && y4 == other.y4;
+    const double epsilon = 1e-9;
+    return std::abs(x1 - other.x1) < epsilon && std::abs(y1 - other.y1) < epsilon &&
+           std::abs(x2 - other.x2) < epsilon && std::abs(y2 - other.y2) < epsilon &&
+           std::abs(x3 - other.x3) < epsilon && std::abs(y3 - other.y3) < epsilon &&
+           std::abs(x4 - other.x4) < epsilon && std::abs(y4 - other.y4) < epsilon;
 }
 
 std::pair<double, double> Square::center() const {
@@ -73,8 +72,8 @@ Square::operator double() const {
     return area();
 }
 
-std::unique_ptr<Figure> Square::clone() const {
-    return std::make_unique<Square>(*this);
+Figure* Square::clone() const {
+    return new Square(*this);
 }
 
 double Square::area() const {
@@ -111,11 +110,9 @@ Rectangle::Rectangle(const Rectangle& other)
       center_x(other.center_x), center_y(other.center_y) {}
 
 Rectangle::Rectangle(Rectangle&& other) noexcept 
-    : x1(std::move(other.x1)), y1(std::move(other.y1)),
-      x2(std::move(other.x2)), y2(std::move(other.y2)),
-      x3(std::move(other.x3)), y3(std::move(other.y3)),
-      x4(std::move(other.x4)), y4(std::move(other.y4)),
-      center_x(std::move(other.center_x)), center_y(std::move(other.center_y)) {
+    : x1(other.x1), y1(other.y1), x2(other.x2), y2(other.y2),
+      x3(other.x3), y3(other.y3), x4(other.x4), y4(other.y4),
+      center_x(other.center_x), center_y(other.center_y) {
     other.x1 = other.y1 = other.x2 = other.y2 = other.x3 = other.y3 = other.x4 = other.y4 = 0;
     other.center_x = other.center_y = 0;
 }
@@ -134,12 +131,12 @@ Rectangle& Rectangle::operator=(const Rectangle& other) {
 
 Rectangle& Rectangle::operator=(Rectangle&& other) noexcept {
     if (this != &other) {
-        x1 = std::move(other.x1); y1 = std::move(other.y1);
-        x2 = std::move(other.x2); y2 = std::move(other.y2);
-        x3 = std::move(other.x3); y3 = std::move(other.y3);
-        x4 = std::move(other.x4); y4 = std::move(other.y4);
-        center_x = std::move(other.center_x);
-        center_y = std::move(other.center_y);
+        x1 = other.x1; y1 = other.y1;
+        x2 = other.x2; y2 = other.y2;
+        x3 = other.x3; y3 = other.y3;
+        x4 = other.x4; y4 = other.y4;
+        center_x = other.center_x;
+        center_y = other.center_y;
         other.x1 = other.y1 = other.x2 = other.y2 = other.x3 = other.y3 = other.x4 = other.y4 = 0;
         other.center_x = other.center_y = 0;
     }
@@ -154,10 +151,11 @@ bool Rectangle::operator==(const Figure& other) const {
 }
 
 bool Rectangle::operator==(const Rectangle& other) const {
-    return x1 == other.x1 && y1 == other.y1 && 
-           x2 == other.x2 && y2 == other.y2 && 
-           x3 == other.x3 && y3 == other.y3 && 
-           x4 == other.x4 && y4 == other.y4;
+    const double epsilon = 1e-9;
+    return std::abs(x1 - other.x1) < epsilon && std::abs(y1 - other.y1) < epsilon &&
+           std::abs(x2 - other.x2) < epsilon && std::abs(y2 - other.y2) < epsilon &&
+           std::abs(x3 - other.x3) < epsilon && std::abs(y3 - other.y3) < epsilon &&
+           std::abs(x4 - other.x4) < epsilon && std::abs(y4 - other.y4) < epsilon;
 }
 
 std::pair<double, double> Rectangle::center() const {
@@ -168,8 +166,8 @@ Rectangle::operator double() const {
     return area();
 }
 
-std::unique_ptr<Figure> Rectangle::clone() const {
-    return std::make_unique<Rectangle>(*this);
+Figure* Rectangle::clone() const {
+    return new Rectangle(*this);
 }
 
 double Rectangle::area() const {
@@ -206,11 +204,9 @@ Trapezoid::Trapezoid(const Trapezoid& other)
       center_x(other.center_x), center_y(other.center_y) {}
 
 Trapezoid::Trapezoid(Trapezoid&& other) noexcept 
-    : x1(std::move(other.x1)), y1(std::move(other.y1)),
-      x2(std::move(other.x2)), y2(std::move(other.y2)),
-      x3(std::move(other.x3)), y3(std::move(other.y3)),
-      x4(std::move(other.x4)), y4(std::move(other.y4)),
-      center_x(std::move(other.center_x)), center_y(std::move(other.center_y)) {
+    : x1(other.x1), y1(other.y1), x2(other.x2), y2(other.y2),
+      x3(other.x3), y3(other.y3), x4(other.x4), y4(other.y4),
+      center_x(other.center_x), center_y(other.center_y) {
     other.x1 = other.y1 = other.x2 = other.y2 = other.x3 = other.y3 = other.x4 = other.y4 = 0;
     other.center_x = other.center_y = 0;
 }
@@ -229,12 +225,12 @@ Trapezoid& Trapezoid::operator=(const Trapezoid& other) {
 
 Trapezoid& Trapezoid::operator=(Trapezoid&& other) noexcept {
     if (this != &other) {
-        x1 = std::move(other.x1); y1 = std::move(other.y1);
-        x2 = std::move(other.x2); y2 = std::move(other.y2);
-        x3 = std::move(other.x3); y3 = std::move(other.y3);
-        x4 = std::move(other.x4); y4 = std::move(other.y4);
-        center_x = std::move(other.center_x);
-        center_y = std::move(other.center_y);
+        x1 = other.x1; y1 = other.y1;
+        x2 = other.x2; y2 = other.y2;
+        x3 = other.x3; y3 = other.y3;
+        x4 = other.x4; y4 = other.y4;
+        center_x = other.center_x;
+        center_y = other.center_y;
         other.x1 = other.y1 = other.x2 = other.y2 = other.x3 = other.y3 = other.x4 = other.y4 = 0;
         other.center_x = other.center_y = 0;
     }
@@ -249,10 +245,11 @@ bool Trapezoid::operator==(const Figure& other) const {
 }
 
 bool Trapezoid::operator==(const Trapezoid& other) const {
-    return x1 == other.x1 && y1 == other.y1 &&
-           x2 == other.x2 && y2 == other.y2 &&
-           x3 == other.x3 && y3 == other.y3 &&
-           x4 == other.x4 && y4 == other.y4;
+    const double epsilon = 1e-9;
+    return std::abs(x1 - other.x1) < epsilon && std::abs(y1 - other.y1) < epsilon &&
+           std::abs(x2 - other.x2) < epsilon && std::abs(y2 - other.y2) < epsilon &&
+           std::abs(x3 - other.x3) < epsilon && std::abs(y3 - other.y3) < epsilon &&
+           std::abs(x4 - other.x4) < epsilon && std::abs(y4 - other.y4) < epsilon;
 }
 
 std::pair<double, double> Trapezoid::center() const {
@@ -263,8 +260,8 @@ Trapezoid::operator double() const {
     return area();
 }
 
-std::unique_ptr<Figure> Trapezoid::clone() const {
-    return std::make_unique<Trapezoid>(*this);
+Figure* Trapezoid::clone() const {
+    return new Trapezoid(*this);
 }
 
 double Trapezoid::area() const {

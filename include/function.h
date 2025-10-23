@@ -2,7 +2,6 @@
 #define FUNCTION_H
 
 #include <iostream>
-#include <memory>
 #include <cmath>
 
 class Figure {
@@ -13,7 +12,7 @@ public:
     
     virtual explicit operator double() const = 0;
     
-    virtual std::unique_ptr<Figure> clone() const = 0;
+    virtual Figure* clone() const = 0;
     virtual bool operator==(const Figure& other) const = 0;
     
     friend std::ostream& operator<<(std::ostream& os, const Figure& fig) {
@@ -34,92 +33,92 @@ protected:
 
 class Square : public Figure {
 public:
-    Square() = default;
+    Square() : x1(0), y1(0), x2(0), y2(0), x3(0), y3(0), x4(0), y4(0), center_x(0), center_y(0) {}
     Square(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
     
     Square(const Square& other);
     Square& operator=(const Square& other);
-    
     Square(Square&& other) noexcept;
     Square& operator=(Square&& other) noexcept;
+    ~Square() = default;
     
     bool operator==(const Figure& other) const override;
     bool operator==(const Square& other) const;
     
     std::pair<double, double> center() const override;
     explicit operator double() const override;
-    std::unique_ptr<Figure> clone() const override;
+    Figure* clone() const override;
     
     double area() const;
 
 private:
     double x1, y1, x2, y2, x3, y3, x4, y4;
+    double center_x, center_y;
     
     void printVertices(std::ostream& os) const override;
     void read(std::istream& is) override;
     
     void calculateCenter();
-    double center_x, center_y;
 };
 
 class Rectangle : public Figure {
 public:
-    Rectangle() = default;
+    Rectangle() : x1(0), y1(0), x2(0), y2(0), x3(0), y3(0), x4(0), y4(0), center_x(0), center_y(0) {}
     Rectangle(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
     
     Rectangle(const Rectangle& other);
     Rectangle& operator=(const Rectangle& other);
-    
     Rectangle(Rectangle&& other) noexcept;
     Rectangle& operator=(Rectangle&& other) noexcept;
+    ~Rectangle() = default;
     
     bool operator==(const Figure& other) const override;
     bool operator==(const Rectangle& other) const;
     
     std::pair<double, double> center() const override;
     explicit operator double() const override;
-    std::unique_ptr<Figure> clone() const override;
+    Figure* clone() const override;
     
     double area() const;
 
 private:
     double x1, y1, x2, y2, x3, y3, x4, y4;
+    double center_x, center_y;
     
     void printVertices(std::ostream& os) const override;
     void read(std::istream& is) override;
     
     void calculateCenter();
-    double center_x, center_y;
 };
 
 class Trapezoid : public Figure {
 public:
-    Trapezoid() = default;
+    Trapezoid() : x1(0), y1(0), x2(0), y2(0), x3(0), y3(0), x4(0), y4(0), center_x(0), center_y(0) {}
     Trapezoid(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
     
     Trapezoid(const Trapezoid& other);
     Trapezoid& operator=(const Trapezoid& other);
-    
     Trapezoid(Trapezoid&& other) noexcept;
     Trapezoid& operator=(Trapezoid&& other) noexcept;
+    ~Trapezoid() = default;
     
     bool operator==(const Figure& other) const override;
     bool operator==(const Trapezoid& other) const;
     
     std::pair<double, double> center() const override;
     explicit operator double() const override;
-    std::unique_ptr<Figure> clone() const override;
+    Figure* clone() const override;
     
     double area() const;
 
 private:
     double x1, y1, x2, y2, x3, y3, x4, y4;
+    double center_x, center_y;
     
     void printVertices(std::ostream& os) const override;
     void read(std::istream& is) override;
     
     void calculateCenter();
-    double center_x, center_y;
 };
 
 void printMenu();
