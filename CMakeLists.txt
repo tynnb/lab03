@@ -16,18 +16,18 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
+# Основная библиотека с фигурами
 add_library(${CMAKE_PROJECT_NAME}_lib 
     src/function.cpp
-    src/square.cpp
-    src/rectangle.cpp
-    src/trapezoid.cpp
 )
 
 target_include_directories(${CMAKE_PROJECT_NAME}_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# Основное приложение
 add_executable(${CMAKE_PROJECT_NAME} main.cpp)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_PROJECT_NAME}_lib)
 
+# Тесты
 enable_testing()
 
 add_executable(tests test/tests03.cpp)
